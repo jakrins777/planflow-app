@@ -10,7 +10,7 @@ app.use(express.json());
 // ข้อมูลเส้นทาง API เดิมของคุณ
 app.use('/api/plans', planRoutes);
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
