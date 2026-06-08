@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+ }
+
+// 1. Master Data: ฐานข้อมูลงานมาตรฐาน (Job Catalog)
+model JobCatalog {
+  id           Int    @id @default(autoincrement())
+  code         String @unique
+  name         String
+  timePerPiece Int
+}
+
+// 2. Master Data: พนักงาน
+model Employee {
+  id            Int            @id @default(autoincrement())
+  name          String
+  baseTime      Int            @default(460) // เวลาทำงานปกติ
+  defaultOe     Int            @default(85) // ค่า OE เริ่มต้น
+  planManpowers PlanManpower[]
+}
+
+// 3. แผนงานหลักประจำวัน (Daily Plan)
+model DailyPlan {
+  id            Int            @id @default(autoincrement())
+  date          DateTime       @db.Date
+  totalWorkload Int // ภาระงานรวม (นาที)
+  totalCapacity Int // กำลังคนรวมใช้งานจริง (นาที)
+  estimatedDays Float // จำนวนวันที่ต้องใช้
+  projects      Project[] // 1 วันมีหลายโปรเจกต์
+  manpowers     PlanManpower[] // พนักงานที่เข้างานในวันนี้
+}
+
+// 4. ข้อมูลโปรเจกต์ (Project)
+model Project {
+  id          Int       @id @default(autoincrement())
+  planId      Int
+  projectName String
+  customer    String // ชื่อลูกค้า
+  dailyPlan   DailyPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  jobs        Job[] // 1 โปรเจกต์มีหลายงานย่อย
+}
+
+// 5. ข้อมูลงานย่อย (Job)
+model Job {
+  id           Int     @id @default(autoincrement())
+  projectId    Int
+  catalogCode  String // รหัสอ้างอิงจาก JobCatalog
+  jobName      String
+  timePerPiece Int
+  quantity     Int
+  project      Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+// 6. การลงแรงงานของพนักงานและ OT/OE ในวันนั้นๆ
+model PlanManpower {
+  id         Int       @id @default(autoincrement())
+  planId     Int
+  employeeId Int
+  otMinutes  Int       @default(0) // โอทีของวันนั้น
+  oe         Int       @default(85) // ประสิทธิภาพ (OE) ของวันนั้น
+  dailyPlan  DailyPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  employee   Employee  @relation(fields: [employeeId], references: [id])
+}
