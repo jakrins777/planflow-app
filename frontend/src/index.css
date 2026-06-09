@@ -1,1 +1,26 @@
 @import "tailwindcss";
+
+.font-timer {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 2. สไตล์สำหรับซ่อน Scrollbar ของตาราง List เวลาเอาแอปไปเปิดโชว์บนจอทีวีคลังสินค้ากว้างๆ */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* 3. จัดสไตล์แถมสำหรับหน้าสั่งพิมพ์ PDF ของ Planflow ไม่ให้ติดหัวท้ายหน้าเว็บเวลาพิมพ์ */
+@media print {
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  @page {
+    size: auto;
+    margin: 10mm;
+  }
+}
