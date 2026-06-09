@@ -48,10 +48,26 @@ $$\text{Daily Plan} \longrightarrow \text{Projects} \longrightarrow \text{Job It
 ## ⚙️ Installation & Getting Started
 
 ### 1. Backend Setup
-```bash
+
 cd backend
 npm install
 # ทำการเชื่อมต่อฐานข้อมูล Supabase ในไฟล์ .env
 npx prisma db pull
 npx prisma generate
 npm run dev
+
+### 2. Frontend Setup
+
+cd frontend
+npm install
+npm run dev
+
+📦 Deployment
+Production Frontend: ตัวแอปพลิเคชันหน้าบ้านได้รับการคอมไพล์ด้วยคำสั่ง npm run build (vite build) และเปิดให้บริการแบบ Public ผ่าน Vercel
+
+Production Backend: ระบบหลังบ้านเชื่อมต่อผ่าน Webhook บน GitHub และ Deploy อัตโนมัติไปยังเซิร์ฟเวอร์ Render โดยเชื่อมต่อถังข้อมูลปลายทางที่ Supabase Cluster
+
+💡 Business Impact
+Process Optimization: ลดเวลาในการคำนวณและจัดทำแผนงานรายวันของหัวหน้างานจากเดิม 1 ชั่วโมง เหลือเพียง 5 นาที
+
+Visual Management: ช่วยให้หัวหน้าคลังสินค้ามองเห็นภาพรวมภาระงานและจุดวิกฤต (Bottleneck) ได้ทันทีก่อนเริ่มกะงานจริง
